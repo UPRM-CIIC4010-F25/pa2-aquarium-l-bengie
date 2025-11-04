@@ -35,7 +35,7 @@ class ofApp : public ofBaseApp{
 		ofTrueTypeFont gameOverTitle;
 		GameEvent lastEvent;
 
-
+		ofSoundPlayer ambientUnderwater;
 		ofImage backgroundImage;
 
 		std::unique_ptr<GameSceneManager> gameManager;

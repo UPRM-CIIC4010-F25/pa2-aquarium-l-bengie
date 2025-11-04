@@ -66,6 +66,9 @@ protected:
     , m_value(value)
     , m_sprite(std::move(sprite)) {}
 
+
+    float m_maxX = 0.0f;
+    float m_maxY = 0.0f;
     float m_x = 0.0f;
     float m_y = 0.0f;
     float m_dx = 0.0f;
@@ -85,6 +88,12 @@ public:
     virtual float getCollisionRadius() const { return m_collisionRadius; }
     virtual void setCollisionRadius(float radius) { m_collisionRadius = radius; }
 
+
+    void setPosition(float x, float y) { m_x = x; m_y = y; }
+
+    void setBounds(int w, int h);
+    void normalize();
+    void bounce();
     float getX() const { return m_x; }
     float getY() const { return m_y; }
     int getSpeed() const { return m_speed; }
@@ -97,9 +106,9 @@ public:
     void setSprite(std::shared_ptr<GameSprite> sprite) { m_sprite = std::move(sprite); }
     int getValue() const { return m_value; }
 
-    void setBounds(int w, int h);
-    void normalize();
-    void bounce();
+    //void setBounds(int w, int h);
+    //void normalize();
+    //void bounce();
 };
 
 // GameEvents
