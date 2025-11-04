@@ -76,7 +76,7 @@ string GameSceneKindToString(GameSceneKind t){
         case GameSceneKind::GAME_INTRO: return "GAME_INTRO";
         case GameSceneKind::AQUARIUM_GAME: return "AQUARIUM_GAME";
         case GameSceneKind::GAME_OVER: return "GAME_OVER";
-    };
+    };return "UNKNOWN_SCENE";  
 };
 
 std::shared_ptr<GameScene> GameSceneManager::GetScene(string name){

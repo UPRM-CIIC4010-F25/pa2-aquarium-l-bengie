@@ -3,6 +3,7 @@
 #include <utility>
 #include <cmath>
 #include <algorithm>
+#include <string>       // ✅ added: explicit string include
 #include "ofMain.h"
 
 
@@ -34,19 +35,31 @@ public:
     }
 
     void draw(float x, float y) const {
+        // ✅ apply tint (power-up "glow" support)
+        ofColor prev = ofGetStyle().color;
+        ofSetColor(m_tint);
+
         if (m_flipped) {
             m_flippedImage.draw(x, y);
         } else {
             m_image.draw(x, y);
         }
+
+        ofSetColor(prev); // restore color
     }
 
     void setFlipped(bool flipped) { m_flipped = flipped; }
+
+    // ✅ tint API for power-ups
+    void setTint(const ofColor& c) { m_tint = c; }
+    void clearTint() { m_tint = ofColor::white; }
+    ofColor getTint() const { return m_tint; }
 
 private:
     ofImage m_image;
     ofImage m_flippedImage;
     bool m_flipped = false;
+    ofColor m_tint = ofColor::white;  // ✅ default: no tint
 };
 
 
@@ -88,7 +101,6 @@ public:
     virtual float getCollisionRadius() const { return m_collisionRadius; }
     virtual void setCollisionRadius(float radius) { m_collisionRadius = radius; }
 
-
     void setPosition(float x, float y) { m_x = x; m_y = y; }
 
     void setBounds(int w, int h);
@@ -105,10 +117,6 @@ public:
     }
     void setSprite(std::shared_ptr<GameSprite> sprite) { m_sprite = std::move(sprite); }
     int getValue() const { return m_value; }
-
-    //void setBounds(int w, int h);
-    //void normalize();
-    //void bounce();
 };
 
 // GameEvents
@@ -146,11 +154,7 @@ class GameEvent {
     void print() const;
 };
 
-
-
-
 bool checkCollision(std::shared_ptr<Creature> a, std::shared_ptr<Creature> b);
-
 
 class GameLevel {
 public:
@@ -160,12 +164,8 @@ public:
     virtual bool isCompleted() = 0;
 
 protected:
-    int m_levelNumber;
-    
+    int m_levelNumber; 
 };
-
-
-
 
 class GameScene {
     public:
@@ -173,7 +173,6 @@ class GameScene {
         virtual void Update() = 0;
         virtual void Draw() = 0;
         virtual ~GameScene() = default;
-
 };
 
 enum class GameSceneKind {
@@ -208,7 +207,6 @@ class GameOverScene : public GameScene {
         std::shared_ptr<GameSprite> m_banner;
 };
 
-
 class GameSceneManager {
     public:
         void Transition(string name);
@@ -225,5 +223,4 @@ class GameSceneManager {
     private:
         std::vector<std::shared_ptr<GameScene>> m_scenes;
         std::shared_ptr<GameScene> m_active_scene;
-
 };
