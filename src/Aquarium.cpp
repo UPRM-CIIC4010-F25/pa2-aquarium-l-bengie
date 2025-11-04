@@ -352,9 +352,9 @@ void AquariumGameScene::paintAquariumHUD()
 }
 
 /* --------------------------------------------
-   Repopulate Implementations (Levels)
+   Shared Repopulate Implementations (Levels)
 -------------------------------------------- */
-std::vector<AquariumCreatureType> Level_0::Repopulate() {
+std::vector<AquariumCreatureType> AquariumLevel::Repopulate() {
     std::vector<AquariumCreatureType> list;
     for (auto node : m_levelPopulation) {
         int delta = node->population - node->currentPopulation;
@@ -363,53 +363,79 @@ std::vector<AquariumCreatureType> Level_0::Repopulate() {
     }
     return list;
 }
-
-std::vector<AquariumCreatureType> Level_1::Repopulate() {
-    std::vector<AquariumCreatureType> list;
-    for (auto node : m_levelPopulation) {
-        int delta = node->population - node->currentPopulation;
-        while (delta-- > 0) list.push_back(node->creatureType);
-        node->currentPopulation = node->population;
+void AquariumLevel::populationReset(){
+    for(auto node: this->m_levelPopulation){
+        node->currentPopulation = 0; // need to reset the population to ensure they are made a new in the next level
     }
-    return list;
 }
 
-std::vector<AquariumCreatureType> Level_2::Repopulate() {
-    std::vector<AquariumCreatureType> list;
-    for (auto node : m_levelPopulation) {
-        int delta = node->population - node->currentPopulation;
-        while (delta-- > 0) list.push_back(node->creatureType);
-        node->currentPopulation = node->population;
-    }
-    return list;
-}
-
-/* --------------------------------------------
-   Repopulate Implementations (Levels 3 & 4)
--------------------------------------------- */
-std::vector<AquariumCreatureType> Level_3::Repopulate() {
-    std::vector<AquariumCreatureType> list;
-    for (auto node : m_levelPopulation) {
-        int delta = node->population - node->currentPopulation;
-        while (delta-- > 0) {
-            list.push_back(node->creatureType);
+void AquariumLevel::ConsumePopulation(AquariumCreatureType creatureType, int power){
+    for(std::shared_ptr<AquariumLevelPopulationNode> node: this->m_levelPopulation){
+        ofLogVerbose() << "consuming from this level creatures" << endl;
+        if(node->creatureType == creatureType){
+            ofLogVerbose() << "-cosuming from type: " << AquariumCreatureTypeToString(node->creatureType) <<" , currPop: " << node->currentPopulation << endl;
+            if(node->currentPopulation == 0){
+                return;
+            } 
+            node->currentPopulation -= 1;
+            ofLogVerbose() << "+cosuming from type: " << AquariumCreatureTypeToString(node->creatureType) <<" , currPop: " << node->currentPopulation << endl;
+            this->m_level_score += power;
+            return;
         }
-        node->currentPopulation = node->population;
     }
-    return list;
 }
 
-std::vector<AquariumCreatureType> Level_4::Repopulate() {
-    std::vector<AquariumCreatureType> list;
-    for (auto node : m_levelPopulation) {
-        int delta = node->population - node->currentPopulation;
-        while (delta-- > 0) {
-            list.push_back(node->creatureType);
-        }
-        node->currentPopulation = node->population;
-    }
-    return list;
+bool AquariumLevel::isCompleted(){
+    return this->m_level_score >= this->m_targetScore;
 }
+
+
+// std::vector<AquariumCreatureType> Level_1::Repopulate() {
+//     std::vector<AquariumCreatureType> list;
+//     for (auto node : m_levelPopulation) {
+//         int delta = node->population - node->currentPopulation;
+//         while (delta-- > 0) list.push_back(node->creatureType);
+//         node->currentPopulation = node->population;
+//     }
+//     return list;
+// }
+
+// std::vector<AquariumCreatureType> Level_2::Repopulate() {
+//     std::vector<AquariumCreatureType> list;
+//     for (auto node : m_levelPopulation) {
+//         int delta = node->population - node->currentPopulation;
+//         while (delta-- > 0) list.push_back(node->creatureType);
+//         node->currentPopulation = node->population;
+//     }
+//     return list;
+// }
+
+// /* --------------------------------------------
+//    Repopulate Implementations (Levels 3 & 4)
+// -------------------------------------------- */
+// std::vector<AquariumCreatureType> Level_3::Repopulate() {
+//     std::vector<AquariumCreatureType> list;
+//     for (auto node : m_levelPopulation) {
+//         int delta = node->population - node->currentPopulation;
+//         while (delta-- > 0) {
+//             list.push_back(node->creatureType);
+//         }
+//         node->currentPopulation = node->population;
+//     }
+//     return list;
+// }
+
+// std::vector<AquariumCreatureType> Level_4::Repopulate() {
+//     std::vector<AquariumCreatureType> list;
+//     for (auto node : m_levelPopulation) {
+//         int delta = node->population - node->currentPopulation;
+//         while (delta-- > 0) {
+//             list.push_back(node->creatureType);
+//         }
+//         node->currentPopulation = node->population;
+//     }
+//     return list;
+// }
 
 
 

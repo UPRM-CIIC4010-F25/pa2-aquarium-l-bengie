@@ -24,8 +24,8 @@ Grading
 ## Team Info
 | Student Number | Student Name | Student Email |
 |-|-|-|
-|(STUDENT NUMBER HERE)| (STUDENT NAME HERE)| (STUDENT EMAIL HERE) |
-|(STUDENT NUMBER HERE)| (STUDENT NAME HERE)| (STUDENT EMAIL HERE) |
+|843-19-2952| Luis A. Soto Roman | luis.soto41@upr.edu |
+|802-23-5308| Benjamin A. Morales Alicea | benjamin.morales5@upr.edu |
 
 ---
 

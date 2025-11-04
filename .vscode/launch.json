@@ -35,7 +35,7 @@
                         "ignoreFailures": true
                     }
                 ],
-                "program": "${workspaceRoot}/bin/${workspaceFolderBasename}_debug"
+                "program": "${workspaceRoot}/bin/${workspaceFolderBasename}.exe"
             }
         },
         {
