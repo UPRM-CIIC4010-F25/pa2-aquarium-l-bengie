@@ -37,3 +37,11 @@ If a partner has no commits in the repositories, they will receive a 0.
 
 # Student Notes
 If you have any bonus specs, bonus or any details the TA's should know, you should include it here:
+Added new progresion
+    Blue Fish: 1 power needed to eat
+    Purple Fish: 3 power needed to eat
+    Green Fish: 4 power needed to eat
+    Orange Fish: 5 power needed to eat
+Added new sprite to player for it to be more visible in game
+Added sound effect for game over
+Added changes to title and game over screen

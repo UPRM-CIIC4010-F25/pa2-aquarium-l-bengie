@@ -149,8 +149,8 @@ FastFish::FastFish(float x, float y, int speed, std::shared_ptr<GameSprite> spri
 }
 
 void FastFish::move(){
-	m_x += m_dx * (m_speed * 2);
-    m_y += m_dy * (m_speed * 2);
+	m_x += m_dx * (m_speed * 2);//Moves at double speed
+    m_y += m_dy * (m_speed * 2);//Moves at double speed
     if(m_dx < 0){
         this->m_sprite->setFlipped(true);
     }
