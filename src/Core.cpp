@@ -2,8 +2,7 @@
 
 
 // Creature Inherited Base Behavior
-void Creature::setBounds(int w, int h) { m_maxX = w; m_maxY = h; }
-
+void Creature::setBounds(int w, int h) { m_width = w; m_height = h; }
 void Creature::normalize() {
     float length = std::sqrt(m_dx * m_dx + m_dy * m_dy);
     if (length != 0) {
@@ -13,19 +12,33 @@ void Creature::normalize() {
 }
 
 void Creature::bounce() {
-    // keep a tiny margin so sprites don’t get stuck on exact edges
-    const float left   = 0.0f + 1.0f;
-    const float right  = (float)m_maxX - 1.0f;
-    const float top    = 0.0f + 1.0f;
-    const float bottom = (float)m_maxY - 1.0f;
-
-    if (m_x <= left || m_x >= right) {
-        m_dx = -m_dx;
-        m_x = std::clamp(m_x, left, right);
+    // should implement boundary controls here
+    if(m_width<=0 || m_height <= 0)
+        return;
+    bool bounced = false;
+    //Checks left boundary
+    if(m_x < 0){
+        m_x=0;
+        m_dx = std::abs(m_dx);
+        bounced = true;
     }
-    if (m_y <= top || m_y >= bottom) {
-        m_dy = -m_dy;
-        m_y = std::clamp(m_y, top, bottom);
+    //Checks right boundary
+    if (m_x + m_sprite->getWidth() > m_width){
+        m_x = m_width - m_sprite->getWidth();
+        m_dx = -std::abs(m_dx);
+    }
+    
+    //Checks ceiling boundary
+    if(m_y < 0){
+        m_y = 0;
+        m_dy = std::abs(m_dy);
+        bounced = true;
+    }
+    //Checks floor boundary
+    if (m_y + m_sprite->getHeight() > m_height){
+        m_y = m_height - m_sprite->getHeight();
+        m_dy = -std::abs(m_dy);
+        bounced = true;
     }
 }
 
@@ -62,11 +75,14 @@ void GameEvent::print() const {
 
 // collision detection between two creatures
 bool checkCollision(std::shared_ptr<Creature> a, std::shared_ptr<Creature> b) {
-    if (!a || !b) return false;
-    const float dx = a->getX() - b->getX();
-    const float dy = a->getY() - b->getY();
-    const float r  = a->getCollisionRadius() + b->getCollisionRadius();
-    return (dx*dx + dy*dy) <= (r*r);
+    if(!a || !b)
+    return false;
+    
+    float dx = a->getX() - b->getX();
+    float dy = a->getY() - b->getY();
+    float distance = std::sqrt(dx * dx + dy * dy);
+
+    return distance < (a->getCollisionRadius() + b->getCollisionRadius());
 };
 
 
@@ -76,7 +92,7 @@ string GameSceneKindToString(GameSceneKind t){
         case GameSceneKind::GAME_INTRO: return "GAME_INTRO";
         case GameSceneKind::AQUARIUM_GAME: return "AQUARIUM_GAME";
         case GameSceneKind::GAME_OVER: return "GAME_OVER";
-    };return "UNKNOWN_SCENE";  
+    };
 };
 
 std::shared_ptr<GameScene> GameSceneManager::GetScene(string name){

@@ -8,6 +8,14 @@ void ofApp::setup(){
     backgroundImage.load("background.png");
     backgroundImage.resize(ofGetWindowWidth(), ofGetWindowHeight());
 
+    //Background Music
+    backgroundMusic.load("Aquarium Background Music.mp3");
+    backgroundMusic.setLoop(true);
+    backgroundMusic.play();
+
+    //Game Over Effect
+    gameovereffect.load("Game Over.mp3");
+
 
     std::shared_ptr<Aquarium> myAquarium;
     std::shared_ptr<PlayerCreature> player;
@@ -27,7 +35,7 @@ void ofApp::setup(){
 
     // Lets setup the aquarium
     myAquarium = std::make_shared<Aquarium>(ofGetWindowWidth(), ofGetWindowHeight(), spriteManager);
-    player = std::make_shared<PlayerCreature>(ofGetWindowWidth()/2 - 50, ofGetWindowHeight()/2 - 50, DEFAULT_SPEED, this->spriteManager->GetSprite(AquariumCreatureType::NPCreature));
+    player = std::make_shared<PlayerCreature>(ofGetWindowWidth()/2 - 50, ofGetWindowHeight()/2 - 50, DEFAULT_SPEED, this->spriteManager->GetSprite(AquariumCreatureType::PlayerFish));
     player->setDirection(0, 0); // Initially stationary
     player->setBounds(ofGetWindowWidth() - 20, ofGetWindowHeight() - 20);
 
@@ -35,6 +43,8 @@ void ofApp::setup(){
     myAquarium->addAquariumLevel(std::make_shared<Level_0>(0, 10));
     myAquarium->addAquariumLevel(std::make_shared<Level_1>(1, 15));
     myAquarium->addAquariumLevel(std::make_shared<Level_2>(2, 20));
+    myAquarium->addAquariumLevel(std::make_shared<Level_3>(3, 20));
+    myAquarium->addAquariumLevel(std::make_shared<Level_4>(4, 20));
     myAquarium->Repopulate(); // initial population
 
     // now that we are mostly set, lets pass the player and the aquarium downstream
@@ -67,6 +77,11 @@ void ofApp::update(){
         auto gameScene = std::static_pointer_cast<AquariumGameScene>(gameManager->GetActiveScene());
         if(gameScene->GetLastEvent() != nullptr && gameScene->GetLastEvent()->isGameOver()){
             gameManager->Transition(GameSceneKindToString(GameSceneKind::GAME_OVER));
+            //Stop music when game over + sound effect
+            if(backgroundMusic.isPlaying()){
+                gameovereffect.play();
+                backgroundMusic.stop();
+            }
             return;
         }
         

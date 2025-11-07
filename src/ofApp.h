@@ -35,9 +35,9 @@ class ofApp : public ofBaseApp{
 		ofTrueTypeFont gameOverTitle;
 		GameEvent lastEvent;
 
-		ofSoundPlayer ambientUnderwater;
+		ofSoundPlayer backgroundMusic;
+		ofSoundPlayer gameovereffect;
 		ofImage backgroundImage;
-
 		std::unique_ptr<GameSceneManager> gameManager;
 		std::shared_ptr<AquariumSpriteManager>spriteManager;
 		
