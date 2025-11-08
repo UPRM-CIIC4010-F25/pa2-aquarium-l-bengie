@@ -107,32 +107,6 @@ public:
     void bounce();
 };
 
-//Power Up Class
- enum class PowerUpModifier {
-    SIZE_UP
- };
-
- class PowerUp {
-public:
-    PowerUp(PowerUpModifier type, float duration = 5.0f) : type(type), duration(duration), active(false) {}
-    
-    PowerUpModifier getType() const { return type; }
-    float getDuration() const { return duration; }
-    bool isActive() const { return active; }
-
-    void activate() { active = true; timer = 0.0f; }
-    void update(float deltaTime){
-        if(active) timer += deltaTime;
-        if(timer >= duration) active = false;
-    }
-
-private:
-    PowerUpModifier type;
-    float duration;
-    float timer = 0.0f;
-    bool active;
- };
-
 // GameEvents
 enum class GameEventType {
     NONE,
