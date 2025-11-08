@@ -14,6 +14,8 @@ string AquariumCreatureTypeToString(AquariumCreatureType t){
             return "VerticalFish";
         case AquariumCreatureType::PlayerFish:
             return "PlayerFish";
+        case AquariumCreatureType::PowerUp:
+            return "PowerUp";
         default:
             return "UknownFish";
     }
@@ -149,8 +151,8 @@ FastFish::FastFish(float x, float y, int speed, std::shared_ptr<GameSprite> spri
 }
 
 void FastFish::move(){
-	m_x += m_dx * (m_speed * 2);
-    m_y += m_dy * (m_speed * 2);
+	m_x += m_dx * (m_speed * 2);//FastFish moves at double the normal speed
+    m_y += m_dy * (m_speed * 2);//FastFish moves at double the normal speed
     if(m_dx < 0){
         this->m_sprite->setFlipped(true);
     }
@@ -193,6 +195,34 @@ void VerticalFish::draw() const {
     this->m_sprite->draw(this->m_x, this->m_y);
 }
 
+//PowerUp Implementation
+PowerUp::PowerUp(float x, float y, int speed, std::shared_ptr<GameSprite> sprite)
+: NPCreature(x, y, speed, sprite) {
+    m_dx = (rand() % 3 - 1);
+    m_dy = (rand() % 3 - 1);
+    normalize();
+
+    m_value = 1;
+    m_creatureType = AquariumCreatureType::PowerUp;
+}
+
+void PowerUp::move() {
+    m_x += m_dx * m_speed;
+    m_y += m_dy * m_speed;
+    if(m_dx < 0 ){
+        this->m_sprite->setFlipped(true);
+    }else {
+        this->m_sprite->setFlipped(false);
+    }
+    bounce();
+}
+
+void PowerUp::draw() const {
+    ofLogVerbose() << "PowerUp at (" << m_x << ", " << m_y << ") with speed " << m_speed << std::endl;
+    this->m_sprite->draw(this->m_x, this->m_y);
+}
+
+
 // AquariumSpriteManager
 AquariumSpriteManager::AquariumSpriteManager(){
     this->m_npc_fish = std::make_shared<GameSprite>("base-fish.png", 70,70);
@@ -200,7 +230,7 @@ AquariumSpriteManager::AquariumSpriteManager(){
     this->m_fast_fish = std::make_shared<GameSprite>("Fast Fish.png", 70,70);
     this->m_vertical_fish = std::make_shared<GameSprite>("Vertical Fish.png", 120, 120);
     this->m_player_fish = std::make_shared<GameSprite>("Player Fish.png", 70, 70);
-    this->m_powerup = std::make_shared<GameSprite>("Power Up Sprite.png", 70, 70);
+    this->m_powerup = std::make_shared<GameSprite>("Power Up Sprite.png", 50, 50);
 }
 
 std::shared_ptr<GameSprite> AquariumSpriteManager::GetSprite(AquariumCreatureType t){
@@ -214,7 +244,9 @@ std::shared_ptr<GameSprite> AquariumSpriteManager::GetSprite(AquariumCreatureTyp
         case AquariumCreatureType::VerticalFish:
             return std::make_shared<GameSprite>(*this->m_vertical_fish);
         case AquariumCreatureType::PlayerFish:
-            return std::make_shared<GameSprite>(*this->m_player_fish);           
+            return std::make_shared<GameSprite>(*this->m_player_fish);
+        case AquariumCreatureType::PowerUp:
+            return std::make_shared<GameSprite>(*this->m_powerup);       
         default:
             return nullptr;
     }
@@ -296,8 +328,10 @@ void Aquarium::SpawnCreature(AquariumCreatureType type) {
             this->addCreature(std::make_shared<VerticalFish>(x, y, speed, this->m_sprite_manager->GetSprite(AquariumCreatureType::VerticalFish)));
             break;
         case AquariumCreatureType::PlayerFish:
-            this->addCreature(std::make_shared<VerticalFish>(x, y, speed, this->m_sprite_manager->GetSprite(AquariumCreatureType::PlayerFish)));
-        default:
+            this->addCreature(std::make_shared<PlayerCreature>(x, y, speed, this->m_sprite_manager->GetSprite(AquariumCreatureType::PlayerFish)));
+        case AquariumCreatureType::PowerUp:
+            this->addCreature(std::make_shared<PowerUp>(x, y, speed, this->m_sprite_manager->GetSprite(AquariumCreatureType::PowerUp)));
+            default:
             ofLogError() << "Unknown creature type to spawn!";
             break;
     }
